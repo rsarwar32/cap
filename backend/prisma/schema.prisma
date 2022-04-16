@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model c_order {
+  c_order_id                        Int                 @id @default(autoincrement())
+  c_order_date                      DateTime            @db.Date
+  c_order_paid                      Int                 @db.TinyInt
+  customer_id                       Int
+  review_id                         Int?
+  c_order_payment_method            String              @db.VarChar(45)
+  c_order_ship                      Int                 @db.TinyInt
+  c_order_ship_status               Int?                @db.TinyInt
+  c_order_ship_cost                 Decimal?            @db.Decimal(10, 2)
+  c_order_subtotal                  Decimal?            @db.Decimal(10, 2)
+  c_order_tax                       Decimal?            @db.Decimal(10, 2)
+  c_order_total                     Decimal?            @db.Decimal(10, 2)
+  customer                          customer            @relation(fields: [customer_id], references: [customer_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CustomerOrder")
+  c_order_line_item                 c_order_line_item[]
+  review_c_orderToreview_c_order_id review[]            @relation("c_orderToreview_c_order_id")
+
+  @@index([customer_id], map: "FK_CustomerOrder")
+}
+
+model c_order_line_item {
+  c_order_id     Int
+  product_id     Int
+  c_oli_count    Int      @default(1)
+  c_oli_discount Decimal? @db.Decimal(10, 2)
+  c_order        c_order  @relation(fields: [c_order_id], references: [c_order_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_C_Order_ID")
+  product        product  @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ProductOrderID")
+
+  @@id([c_order_id, product_id])
+  @@index([product_id], map: "FK_ProductOrderID")
+}
+
+model customer {
+  customer_id                                       Int             @id @default(autoincrement())
+  customer_f_name                                   String          @db.VarChar(45)
+  customer_l_name                                   String          @db.VarChar(45)
+  customer_ship_address                             String?         @db.VarChar(45)
+  customer_ship_address_two                         String?         @db.VarChar(45)
+  customer_ship_city                                String?         @db.VarChar(45)
+  customer_ship_state                               String?         @db.Char(2)
+  customer_ship_zip                                 Int?
+  customer_bill_address                             String          @db.VarChar(45)
+  customer_bill_address_two                         String?         @db.VarChar(45)
+  customer_bill_city                                String          @db.VarChar(45)
+  customer_bill_state                               String          @db.Char(2)
+  customer_bill_zip                                 Int
+  customer_email                                    String          @db.VarChar(45)
+  customer_point_total                              Int
+  state_tax_customer_customer_bill_stateTostate_tax state_tax       @relation("customer_customer_bill_stateTostate_tax", fields: [customer_bill_state], references: [state_abbr], onDelete: NoAction, onUpdate: NoAction, map: "FK_CustomerBill_ID")
+  state_tax_customer_customer_ship_stateTostate_tax state_tax?      @relation("customer_customer_ship_stateTostate_tax", fields: [customer_ship_state], references: [state_abbr], onDelete: NoAction, onUpdate: NoAction, map: "FK_CustomerShip_ID")
+  c_order                                           c_order[]
+  visit_history                                     visit_history[]
+
+  @@index([customer_bill_state], map: "FK_CustomerBill_ID")
+  @@index([customer_ship_state], map: "FK_CustomerShip_ID")
+}
+
+model event {
+  event_id    Int       @id @default(autoincrement())
+  location_id Int
+  event_name  String    @db.VarChar(255)
+  event_desc  String    @db.Text
+  event_date  DateTime? @db.DateTime(0)
+  location    location  @relation(fields: [location_id], references: [location_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_EventLocation_ID")
+
+  @@index([location_id], map: "FK_EventLocation_ID")
+}
+
+model location {
+  location_id          Int             @id @default(autoincrement())
+  location_name        String          @db.VarChar(45)
+  location_address     String          @db.VarChar(45)
+  location_address_two String?         @db.VarChar(45)
+  location_city        String          @db.VarChar(45)
+  location_state       String          @db.Char(2)
+  location_zip         Int
+  state_tax            state_tax       @relation(fields: [location_state], references: [state_abbr], onDelete: NoAction, onUpdate: NoAction, map: "FK_LocationState_ID")
+  event                event[]
+  visit_history        visit_history[]
+
+  @@index([location_state], map: "FK_LocationState_ID")
+}
+
+model material {
+  material_id            Int                      @id @default(autoincrement())
+  material_name          String                   @db.VarChar(255)
+  material_desc          String                   @db.VarChar(255)
+  material_cost          Decimal                  @db.Decimal(10, 2)
+  supplier_item          supplier_item[]
+  supply_order_line_item supply_order_line_item[]
+}
+
+model product {
+  product_id            Int                     @id @default(autoincrement())
+  product_name          String                  @db.VarChar(250)
+  product_category      Int
+  product_desc          String                  @db.Text
+  product_cost          Decimal                 @db.Decimal(10, 2)
+  product_image         Bytes?
+  c_order_line_item     c_order_line_item[]
+  product_specification product_specification[]
+  review                review[]
+}
+
+model product_category {
+  prod_cat_id           Int                     @id @default(autoincrement())
+  prod_cat_name         String                  @db.VarChar(250)
+  product_specification product_specification[]
+}
+
+model product_specification {
+  ps_id            Int              @id @default(autoincrement())
+  product_id       Int
+  prod_cat_id      Int
+  product_main     Boolean?
+  product_category product_category @relation(fields: [prod_cat_id], references: [prod_cat_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Product_Category")
+  product          product          @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Product_Spec")
+
+  @@index([prod_cat_id], map: "FK_Product_Category")
+  @@index([product_id], map: "FK_Product_Spec")
+}
+
+model review {
+  review_id                          Int     @id @default(autoincrement())
+  c_order_id                         Int
+  product_id                         Int
+  review_rating                      Int
+  review_desc                        String  @db.VarChar(255)
+  c_order_c_orderToreview_c_order_id c_order @relation("c_orderToreview_c_order_id", fields: [c_order_id], references: [c_order_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_C_Order_Review_ID")
+  product                            product @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Product_Review_ID")
+
+  @@index([c_order_id], map: "FK_C_Order_Review_ID")
+  @@index([product_id], map: "FK_Product_Review_ID")
+}
+
+model state_tax {
+  state_abbr                                       String     @id @db.Char(2)
+  state_tax_rate                                   Float      @db.Float
+  customer_customer_customer_bill_stateTostate_tax customer[] @relation("customer_customer_bill_stateTostate_tax")
+  customer_customer_customer_ship_stateTostate_tax customer[] @relation("customer_customer_ship_stateTostate_tax")
+  location                                         location[]
+  supplier                                         supplier[]
+}
+
+model supplier {
+  supplier_id             Int             @id @default(autoincrement())
+  supplier_name           String          @db.VarChar(255)
+  supplier_address        String?         @db.VarChar(255)
+  supplier_address_two    String?         @db.VarChar(255)
+  supplier_city           String?         @db.VarChar(255)
+  supplier_state          String?         @db.VarChar(2)
+  supplier_zip            Int?
+  supplier_contact_f_name String          @db.VarChar(255)
+  supplier_contact_l_name String          @db.VarChar(255)
+  supplier_contact_email  String          @db.VarChar(255)
+  supplier_notes          String?         @db.VarChar(255)
+  state_tax               state_tax?      @relation(fields: [supplier_state], references: [state_abbr], onDelete: NoAction, onUpdate: NoAction, map: "FK_SupplierState")
+  supplier_item           supplier_item[]
+  supply_order            supply_order[]
+
+  @@index([supplier_state], map: "FK_SupplierState")
+}
+
+model supplier_item {
+  supplier_id Int
+  material_id Int
+  si_name     String   @db.VarChar(255)
+  material    material @relation(fields: [material_id], references: [material_id], onDelete: Cascade, map: "FK_SupplierMaterial_ID")
+  supplier    supplier @relation(fields: [supplier_id], references: [supplier_id], onDelete: Cascade, map: "FK_SupplierItem_ID")
+
+  @@id([supplier_id, material_id])
+  @@index([material_id], map: "FK_SupplierMaterial_ID")
+}
+
+model supply_order {
+  so_id                  Int                      @id @default(autoincrement())
+  so_date                DateTime                 @db.Date
+  supplier_id            Int
+  so_payment_methods     String                   @db.VarChar(45)
+  so_subtotal            Decimal                  @db.Decimal(10, 2)
+  so_tax                 Decimal                  @db.Decimal(10, 2)
+  so_total               Decimal                  @db.Decimal(10, 2)
+  so_shipping            Decimal                  @db.Decimal(10, 2)
+  supplier               supplier                 @relation(fields: [supplier_id], references: [supplier_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Supplier_Order_ID")
+  supply_order_line_item supply_order_line_item[]
+
+  @@index([supplier_id], map: "FK_Supplier_Order_ID")
+}
+
+model supply_order_line_item {
+  so_id         Int
+  material_id   Int
+  soli_count    Int
+  soli_discount Decimal?     @db.Decimal(10, 2)
+  material      material     @relation(fields: [material_id], references: [material_id], onDelete: Cascade, map: "FK_SupplyMaterial_ID")
+  supply_order  supply_order @relation(fields: [so_id], references: [so_id], onDelete: Cascade, map: "FK_SupplyOrder_ID")
+
+  @@id([so_id, material_id])
+  @@index([material_id], map: "FK_SupplyMaterial_ID")
+  @@index([so_id], map: "so_id")
+}
+
+model user {
+  user_id   Int     @id @default(autoincrement())
+  user_name String? @db.VarChar(45)
+  user_pass String? @db.VarChar(45)
+}
+
+model visit_history {
+  customer_id Int
+  location_id Int
+  customer    customer @relation(fields: [customer_id], references: [customer_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_CustomerVisit_ID")
+  location    location @relation(fields: [location_id], references: [location_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_LocationVisit_ID")
+
+  @@id([customer_id, location_id])
+  @@index([location_id], map: "FK_LocationVisit_ID")
+}
+
+model dateonly {
+  date_id Int       @id @default(autoincrement())
+  DATE2   DateTime? @db.Date
+  DATE1   DateTime? @db.DateTime(0)
+}

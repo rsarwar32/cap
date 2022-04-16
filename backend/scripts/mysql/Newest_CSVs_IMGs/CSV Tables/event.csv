@@ -1,0 +1,6 @@
+﻿event_id,location_id,event_name,event_desc,event_date
+1,1,Charity,Fundraising,2022-03-28
+2,2,Holiday,Discount for Holidays,2022-03-29
+3,3,National Candle Day,Annual event with Discount,2022-03-30
+4,4,Celebration,Discount for big party events,2022-03-31
+5,5,Reward Boosting ,Increase reward point for loyalty customer,2022-04-01

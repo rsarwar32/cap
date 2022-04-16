@@ -1,0 +1,15 @@
+review_id,c_order_id,product_id,review_rating,review_desc
+1,1,1,5,"This <product> has been amazing, and smells fantastic."
+2,2,1,5,This <product> is simplying fantastic
+3,3,1,5,This <product> keeps my skin smelling amazing
+4,4,1,5,Urban Scents really outdid themselves with <product>
+5,5,1,2,I found the <product>  to be overwhelming in fragrance
+6,6,1,4,None
+7,7,1,5,None
+8,8,5,4,None
+9,9,11,4,None
+10,10,12,5,None
+11,11,5,4,None
+12,12,5,5,None
+13,13,14,4,None
+14,14,13,5,None

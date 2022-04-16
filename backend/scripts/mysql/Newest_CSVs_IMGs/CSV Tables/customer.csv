@@ -1,0 +1,11 @@
+customer_id,customer_f_name,customer_l_name,customer_ship_address,customer_ship_address_two,customer_ship_city,customer_ship_state,customer_ship_zip,customer_bill_address,customer_bill_address_two,customer_bill_city,customer_bill_state,customer_bill_zip,customer_email,customer_point_total
+1,Debra,Douglas,1704 Thrush St,,Houston,TX,77048,1704 Thrush St,,Houston,TX,77048,debra.douglas0205@yahoo.com,1
+2,carrieretha,bell,11201 Boudreaux rd #215,,Tomball,TX,77375,11201 Boudreaux rd #215,,Tomball,TX,77375,,2
+3,Dianne M,Kelly,209 Miller Dr,,Southampton,PA,18966,209 Miller Dr,,Southampton,PA,18966,,3
+4,Tina,Keister,3494 Meese Rd Ne,,LOUISVILLE,OH,44641,3494 Meese Rd Ne,,LOUISVILLE,OH,44641,,4
+5,Stacy,Taylor,2801 W Bay Area Blvd,Apt 1305,WEBSTER,TX,77598,2801 W Bay Area Blvd,Apt 1305,WEBSTER,TX,77598,,5
+6,Jesse Franklin,Bustos,401 Central Ave,,Kearney,NE,68847,401 Central Ave,,Kearney,NE,68847,,6
+7,Dawn,Osburn,765B W Oakley Ave,,LOWELL,IN,46356,765B W Oakley Ave,,LOWELL,IN,46356,,7
+8,Marlene,Ambriz,819 Bayou Rd,,La Marque,TX,77568,819 Bayou Rd,,La Marque,TX,77568,acreation4u@att.net,8
+9,Corrie,Taylor,18524 Dacca Dr,,Houston,TX,77048, 18524 Dacca Dr,,Houston,TX,77048,cokey2009@gmail.com,9
+10,Trey,Neighbor,18520 Dacca Dr,,Houston,TX,77048,18520 Dacca Dr,,Houston,TX,77048,,11
